@@ -26,9 +26,9 @@ ProductTag.init(
       references: {
         model: 'Tag',
         key: 'id',
-        unique: false
-      }
-    }
+        unique: false,
+      },
+    },
   },
   {
     sequelize,
@@ -36,7 +36,7 @@ ProductTag.init(
     freezeTableName: true,
     underscored: true,
     modelName: 'product_tag',
-  }
+  },
 );
 
 module.exports = ProductTag;
