@@ -7,34 +7,46 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
-  try {
-    const productData = Product.findAll({
-      include: [{Model: Category}, {model: Tag}]
+Product.findAll({
+      include: [
+        {Model: Category,
+        attributes: ["category_name", "id"],
+      }, 
+        {model: Tag,
+        attributes: ["tag_name", "id"],
+        }]
+    })
+    .then((data) => res.json(data))
+    .catch((err) => {
+      res.status(500).json(err);
     });
-    res.status(200).json(productData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
 });
 
 // get one product
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
-    try {
-      const productData = Product.findByPk(req.params.id, {
-        include: [{ model: Category}, {model: Tag}]
-      });
+  Product.findOne({
+  where: {id: req.params.id},
 
-      if (!productData) {
+    include: [
+    {Model: Category,
+    attributes: ["category_name", "id"],
+  }, 
+    {model: Tag,
+    attributes: ["tag_name", "id"],
+    }]
+})
+  .then((data) => {
+      if (!data) {
         res.status(404).json({ message: 'No product found with this id!' });
         return;
       }
   
-      res.status(200).json(productData);
-    } catch (err) {
+      res.json(data);
+    }) .catch((err) => {
       res.status(500).json(err);
-    }
+    })
 });
 
 // create new product
@@ -105,22 +117,22 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
-    try {
-      let deletedProduct = Product.destroy({
+   Product.destroy({
         where: {
           id: req.params.id
         }
-      });
+      })
+      .then((data) => {
   
-      if (!deletedProduct) {
+      if (!data) {
         res.status(404).json({ message: 'No product found with this id!' });
         return;
       }
   
-      res.status(200).json(deletedProduct);
-    } catch (err) {
+      res.status(200).json(data);
+    }) .catch((err) => {
       res.status(500).json(err);
-    }
+    });
   });
 
 
